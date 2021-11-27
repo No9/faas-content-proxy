@@ -17,3 +17,31 @@ cargo run
 
 Open a web browser at http://localhost:8090/1/ or http://localhost:8090/1/
 
+## run in podpman
+
+1. Clone this repository
+    ```
+    git clone https://github.com/No9/faas-content-proxy
+    ```
+1. Create an s3 bucket on your favourite cloud provider.
+
+1. Copy the contents of the folder `sampledata` to the s3 bucket
+
+1. Create some credentials for the bucket.
+
+1. Then create a `.env` file in the base folder of this project with the following entries.
+
+    Replacing the XXXX with the vaules from the credentials you created.
+
+    ```
+    S3ACCESSKEY=XXXX
+    S3SECRET=XXXX
+    S3BUCKETNAME=XXXX
+    S3ENDPOINT=XXXX
+    ```
+1. Run podman script
+    ```
+    ./runpod.sh
+    ```
+
+1. Open a web browser at http://localhost:8090/1/ or http://localhost:8090/1/
