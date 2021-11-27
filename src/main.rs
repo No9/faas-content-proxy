@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 use dotenv;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{Map, Value};
 use std::env;
 use tide::http::mime;
 use tide::log::debug;
@@ -11,7 +11,15 @@ use tide::{Request, Response, Result, StatusCode};
 #[derive(Debug, Deserialize, Serialize)]
 struct E11tyConfig {
     path: String,
+    httpMethod: String,
+    queryStringParameters: Map<String, Value>,
 }
+
+// {
+//   httpMethod: 'GET',
+//   path: '/2/',
+//   queryStringParameters: { this: 'that' }
+// }
 
 #[derive(Debug, Deserialize, Serialize)]
 struct E11tyResponse {
@@ -65,10 +73,20 @@ async fn main() -> Result<()> {
 
 pub async fn index(req: Request<()>) -> tide::Result {
     let path = req.url().path();
+    let method = req.method();
+    let query = req.url().query_pairs();
+    let mut map: Map<String, Value> = Map::new();
+
+    for (key, value) in query {
+        map.insert(key.to_string(), Value::String(value.to_string()));
+    }
+
     let e11ty_conf = E11tyConfig {
         path: path.to_string(),
+        httpMethod: method.to_string(),
+        queryStringParameters: map,
     };
-
+    debug!("{:?}", e11ty_conf);
     let uri = env::var("11TY_SERVICE")
         .unwrap_or("http://127.0.0.1:8080/2015-03-31/functions/function/invocations".to_string());
     let res: E11tyResponse = surf::post(uri).body_json(&e11ty_conf)?.recv_json().await?;
@@ -77,7 +95,6 @@ pub async fn index(req: Request<()>) -> tide::Result {
     match res.headers.as_object() {
         Some(s) => {
             for (key, value) in s {
-                println!("key:{}, value: {}", key, value);
                 return_response.insert_header(key.as_str(), value.as_str().unwrap_or_default())
             }
         }
