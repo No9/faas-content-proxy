@@ -1,0 +1,26 @@
+[build]
+publish = "public"
+
+[errorpages]
+not_found = "404.html"
+internal_server_error = "500.html"
+
+[[headers]]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/*"
+
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    Content-Security-Policy = "frame-ancestors https://www.facebook.com"
+
+    # Multi-value headers are expressed with multi-line strings.
+	cache-control = '''
+	max-age=0,
+	no-cache,
+	no-store,
+	must-revalidate'''
+
+[[redirects]]
+from = "/:slug/"
+to = "http://127.0.0.1:8080/2015-03-31/functions/function/invocations"
