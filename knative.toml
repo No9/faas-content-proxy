@@ -1,7 +1,9 @@
 [build]
+# if you want to publish content you can by pointing to a folder.
 publish = "public"
 
 [errorpages]
+# Currently only custom 404 and 500 are supported.
 not_found = "404.html"
 internal_server_error = "500.html"
 
@@ -22,5 +24,6 @@ internal_server_error = "500.html"
 	must-revalidate'''
 
 [[redirects]]
+# this section matches routes to a serverless function.
 from = "/:slug/"
 to = "http://127.0.0.1:8080/2015-03-31/functions/function/invocations"
