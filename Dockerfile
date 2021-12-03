@@ -20,5 +20,6 @@ RUN yum install -y procps-ng
 WORKDIR "/app"
 
 COPY --from=rhel8builder /app-build/target/release/faas-content-proxy ./
+COPY --from=rhel8builder /app-build/knative.toml ./
 
 CMD ["./faas-content-proxy"]
