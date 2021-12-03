@@ -65,7 +65,7 @@ struct Build {
 #[async_std::main]
 async fn main() -> Result<()> {
     dotenv::dotenv().ok();
-    let toml_config = fs::read_to_string("./knative.toml")?;
+    let toml_config = fs::read_to_string("./knative.toml").unwrap_or_default();
     let svc_config: ServiceConfig = toml::from_str(toml_config.as_str()).unwrap_or_default();
     debug!("{:?}", svc_config);
 
